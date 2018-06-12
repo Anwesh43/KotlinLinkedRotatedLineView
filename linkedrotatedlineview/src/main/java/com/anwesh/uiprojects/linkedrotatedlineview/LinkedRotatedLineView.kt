@@ -104,6 +104,7 @@ class LinkedRotatedLineView (ctx : Context) : View(ctx) {
             val h : Float = canvas.height.toFloat()
             val gap : Float = w / LRL_NODES
             val k : Int = (i + 1) % 2
+            prev?.draw(canvas, paint)
             paint.color = Color.WHITE
             paint.strokeWidth = Math.min(w, h) / 60
             paint.strokeCap = Paint.Cap.ROUND
