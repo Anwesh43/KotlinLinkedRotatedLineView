@@ -32,7 +32,7 @@ class LinkedRotatedLineView (ctx : Context) : View(ctx) {
 
     data class State(var prevScale : Float = 0f, var dir : Float = 0f, var j : Int = 0) {
 
-        val scales : Array<Float> = arrayOf(0f, 0f, 0f)
+        val scales : Array<Float> = arrayOf(0f, 0f)
 
         fun update(stopcb : (Float) -> Unit) {
             scales[j] += 0.1f * dir
@@ -112,7 +112,7 @@ class LinkedRotatedLineView (ctx : Context) : View(ctx) {
             paint.strokeWidth = Math.min(w, h) / 60
             paint.strokeCap = Paint.Cap.ROUND
             canvas.save()
-            canvas.translate(i * gap - gap + gap * state.scales[0], h/2)
+            canvas.translate(i * gap - gap/2 + gap * state.scales[0], h/2)
             canvas.rotate(90f * (1 - k) + 90f * (2 * k - 1) * state.scales[1])
             canvas.drawLine(0f, -gap/2, 0f, gap/2, paint)
             canvas.restore()
@@ -170,6 +170,7 @@ class LinkedRotatedLineView (ctx : Context) : View(ctx) {
         private val linkedRotatedLine : LinkedRotatedLine = LinkedRotatedLine(0)
 
         fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
             linkedRotatedLine.draw(canvas, paint)
             animator.animate {
                 linkedRotatedLine?.update {
