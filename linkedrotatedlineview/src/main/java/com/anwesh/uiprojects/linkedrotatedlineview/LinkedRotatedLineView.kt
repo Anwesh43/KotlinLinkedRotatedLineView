@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.content.Context
 import android.graphics.*
 
+private val LRL_NODES = 5
 class LinkedRotatedLineView (ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -78,6 +79,59 @@ class LinkedRotatedLineView (ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class RotatedLineNode(var i : Int, val state : State = State()) {
+
+        var next : RotatedLineNode? = null
+
+        var prev : RotatedLineNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if(i < LRL_NODES - 1) {
+                next = RotatedLineNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = w / LRL_NODES
+            val k : Int = (i + 1) % 2
+            paint.color = Color.WHITE
+            paint.strokeWidth = Math.min(w, h) / 60
+            paint.strokeCap = Paint.Cap.ROUND
+            canvas.save()
+            canvas.translate(i * gap - gap + gap * state.scales[0], h/2)
+            canvas.rotate(90f * (1 - k) + 90f * (2 * k - 1) * state.scales[1])
+            canvas.drawLine(0f, -gap/2, 0f, gap/2, paint)
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : RotatedLineNode {
+            var curr : RotatedLineNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
