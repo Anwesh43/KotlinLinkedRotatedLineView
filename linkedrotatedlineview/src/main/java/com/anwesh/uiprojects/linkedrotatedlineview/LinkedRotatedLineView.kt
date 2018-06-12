@@ -159,4 +159,26 @@ class LinkedRotatedLineView (ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedRotatedLineView) {
+
+        private val animator : Animator = Animator(view)
+
+        private val linkedRotatedLine : LinkedRotatedLine = LinkedRotatedLine(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            linkedRotatedLine.draw(canvas, paint)
+            animator.animate {
+                linkedRotatedLine?.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            linkedRotatedLine.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
