@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedrotatedlineview
  * Created by anweshmishra on 12/06/18.
  */
 
+import android.app.Activity
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
@@ -181,6 +182,13 @@ class LinkedRotatedLineView (ctx : Context) : View(ctx) {
             linkedRotatedLine.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) {
+            val view : LinkedRotatedLineView = LinkedRotatedLineView(activity)
+            activity.setContentView(view)
         }
     }
 }
